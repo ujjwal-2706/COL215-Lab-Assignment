@@ -33,6 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity StopWatch is
     Port ( 
+        clock : in std_logic;
         an : out std_logic_vector(3 downto 0);
         seg : out std_logic_vector(6 downto 0);
         dp : out STD_LOGIC := '1');
@@ -42,9 +43,10 @@ end StopWatch;
 
 architecture Structural of StopWatch is
     component timer is
-      Port (
-    sel : inout std_logic_vector (1 downto 0) := "11";
-    anode : out std_logic_vector (3 downto 0));
+        Port (
+            clock: in std_logic;
+          sel : inout std_logic_vector (1 downto 0) := "11";
+          anode : out std_logic_vector (3 downto 0));
     end component;
     
     component mux is
@@ -61,15 +63,67 @@ architecture Structural of StopWatch is
         seg :  out STD_LOGIC_VECTOR(6 downto 0));
     
     end component;
+
+    component convert_int is
+        Port (
+        number : in integer;
+        digits : out std_logic_vector (3 downto 0));
+    end component;
+
+    component modulo1 is
+        Port ( 
+            mod2 : in integer;
+            count : out integer := 0;
+        );
+    end component;
+
+    component modulo2 is
+        Port ( 
+            mod3 : in integer;
+            count : out integer := 0;
+        );
+    end component;
+
+    component modulo3 is
+        Port ( 
+            mod4 : in integer;
+            count : out integer := 0;
+        );
+    end component;
+
+    component modulo4 is
+        Port ( 
+            mod1e7 : in integer;
+            count : out integer := 0;
+        );
+    end component;
+
+    component counter1e7 is
+        Port ( 
+            clock : in std_logic;
+            count : out integer := 1;
+        );
+    end component;
+
+    -- left one is digit1 and right one is digit4
+
     signal sel : std_logic_vector(1 downto 0);
     signal sw : std_logic_vector(3 downto 0);
-    signal digit1 : std_logic_vector(3 downto 0) := "0001";
-    signal digit2 : std_logic_vector(3 downto 0)  := "0101";
-    signal digit3 : std_logic_vector(3 downto 0)  := "0111";
-    signal digit4 : std_logic_vector(3 downto 0)  := "1001";
+    signal digit1,digit2,digit3,digit4 : std_logic_vector(3 downto 0);
+    signal mod1e7,mod1,mod2,mod3,mod4 : integer;
+
 begin
-    T : timer port map(sel, an);
+    T : timer port map(clock, sel, an);
     M : mux port map(digit1, digit2, digit3, digit4, sel, sw);
     SS : seven_segment port map(sw, seg);
+    convert1 : convert_int port map(mod1,digit1);
+    convert2 : convert_int port map(mod2,digit2);
+    convert3 : convert_int port map(mod3,digit3);
+    convert4 : convert_int port map(mod4,digit4);
+    counter1e7 : counter1e7 port map (clock,mod1e7);
+    modulo1 : modulo1 port map (mod2,mod1);
+    modulo2 : modulo2 port map (mod3,mod2);
+    modulo3 : modulo3 port map (mod4,mod3);
+    modulo4 : modulo4 port map (mod1e7,mod4);
 
 end Structural;
