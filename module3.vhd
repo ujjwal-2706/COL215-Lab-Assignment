@@ -34,7 +34,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity modulo3 is
     Port ( 
         mod4 : in integer;
-        count : out integer := 0;
+        count : inout integer := 0
     );
 end modulo3;
 

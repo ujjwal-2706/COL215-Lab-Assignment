@@ -73,35 +73,35 @@ architecture Structural of StopWatch is
     component modulo1 is
         Port ( 
             mod2 : in integer;
-            count : out integer := 0;
+            count : inout integer := 0
         );
     end component;
 
     component modulo2 is
         Port ( 
             mod3 : in integer;
-            count : out integer := 0;
+            count : inout integer := 0
         );
     end component;
 
     component modulo3 is
         Port ( 
             mod4 : in integer;
-            count : out integer := 0;
+            count : inout integer := 0
         );
     end component;
 
     component modulo4 is
         Port ( 
             mod1e7 : in integer;
-            count : out integer := 0;
+            count : inout integer := 0
         );
     end component;
 
     component counter1e7 is
         Port ( 
             clock : in std_logic;
-            count : out integer := 1;
+            count : inout integer := 1
         );
     end component;
 
@@ -120,10 +120,10 @@ begin
     convert2 : convert_int port map(mod2,digit2);
     convert3 : convert_int port map(mod3,digit3);
     convert4 : convert_int port map(mod4,digit4);
-    counter1e7 : counter1e7 port map (clock,mod1e7);
-    modulo1 : modulo1 port map (mod2,mod1);
-    modulo2 : modulo2 port map (mod3,mod2);
-    modulo3 : modulo3 port map (mod4,mod3);
-    modulo4 : modulo4 port map (mod1e7,mod4);
+    count1e7 : counter1e7 port map (clock,mod1e7);
+    modu1 : modulo1 port map (mod2,mod1);
+    modu2 : modulo2 port map (mod3,mod2);
+    modu3 : modulo3 port map (mod4,mod3);
+    modu4 : modulo4 port map (mod1e7,mod4);
 
 end Structural;

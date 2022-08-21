@@ -34,7 +34,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity counter1e7 is
     Port ( 
         clock : in std_logic;
-        count : out integer := 1;
+        count : inout integer := 1
     );
 end counter1e7;
 
