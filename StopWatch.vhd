@@ -59,9 +59,10 @@ architecture Structural of StopWatch is
 
     component timer is
         Port (
-            clock: in std_logic;
+          mod1e5: in integer;
           sel : inout std_logic_vector (1 downto 0) := "11";
-          anode : out std_logic_vector (3 downto 0));
+          anode : out std_logic_vector (3 downto 0)
+        );
     end component;
     
     component mux is
@@ -136,3 +137,4 @@ begin
     modu4 : modulo4 port map (mod1e7,mod4);
 
 end Structural;
+
