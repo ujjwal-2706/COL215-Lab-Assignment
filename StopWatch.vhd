@@ -42,6 +42,21 @@ end StopWatch;
 
 
 architecture Structural of StopWatch is
+
+    component counter1e5 is
+        Port ( 
+            clock : in std_logic;
+            count : inout integer := 1
+        );
+    end component;
+
+    component counter1e7 is
+        Port ( 
+            clock : in std_logic;
+            count : inout integer := 1
+        );
+    end component;
+
     component timer is
         Port (
             clock: in std_logic;
@@ -98,29 +113,23 @@ architecture Structural of StopWatch is
         );
     end component;
 
-    component counter1e7 is
-        Port ( 
-            clock : in std_logic;
-            count : inout integer := 1
-        );
-    end component;
-
     -- left one is digit1 and right one is digit4
 
     signal sel : std_logic_vector(1 downto 0);
     signal sw : std_logic_vector(3 downto 0);
     signal digit1,digit2,digit3,digit4 : std_logic_vector(3 downto 0);
-    signal mod1e7,mod1,mod2,mod3,mod4 : integer;
+    signal mod1e7,mod1,mod2,mod3,mod4,mod1e5 : integer;
 
 begin
-    T : timer port map(clock, sel, an);
+    T : timer port map(mod1e5, sel, an);
     M : mux port map(digit1, digit2, digit3, digit4, sel, sw);
     SS : seven_segment port map(sw, seg);
     convert1 : convert_int port map(mod1,digit1);
     convert2 : convert_int port map(mod2,digit2);
     convert3 : convert_int port map(mod3,digit3);
     convert4 : convert_int port map(mod4,digit4);
-    count1e7 : counter1e7 port map (clock,mod1e7);
+    count1e7 : counter1e7 port map(clock,mod1e7);
+    count1e5 : counter1e5 port map(clock,mod1e5); 
     modu1 : modulo1 port map (mod2,mod1);
     modu2 : modulo2 port map (mod3,mod2);
     modu3 : modulo3 port map (mod4,mod3);

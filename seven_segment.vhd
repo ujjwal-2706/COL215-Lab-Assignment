@@ -40,13 +40,13 @@ end seven_segment;
 architecture Behavioral of seven_segment is
 begin
     -- middle - 0, up right - 5. low - right - 4, down - 3, down-left - 2, up-left - 1, up - 6
-    seg(1) <= not((not(sw(3)) and not(sw(1)) and not(sw(0))) or (not(sw(3)) and sw(2) and not(sw(1))) or (not(sw(3)) and sw(2) and not(sw(0))) or (sw(3) and not(sw(2)) and not(sw(1))));
-    seg(6) <= not((not(sw(3)) and sw(1)) or (not(sw(3)) and sw(2) and sw(0)) or (sw(3) and not(sw(2)) and not(sw(1))) or (not(sw(2)) and not(sw(1)) and not(sw(0))));
-    seg(5) <= not((not(sw(3)) and not(sw(2))) or (not(sw(3)) and not(sw(1)) and not(sw(0))) or (sw(3) and not(sw(2)) and not(sw(1))) or (not(sw(3)) and sw(1) and sw(0)));
-    seg(4) <= not((not(sw(3)) and sw(2)) or (not(sw(2)) and not(sw(1))) or (not(sw(3)) and sw(0)));
-    seg(3) <= not((not(sw(2)) and not(sw(1)) and not(sw(0))) or (sw(3) and not(sw(2)) and not(sw(1))) or (not(sw(3)) and not(sw(2)) and sw(1)) or (not(sw(3)) and sw(1) and not(sw(0))) or (not(sw(3)) and sw(2) and not(sw(1)) and sw(0)));
-    seg(2) <= not((not(sw(2)) and not(sw(1)) and not(sw(0))) or (not(sw(3)) and sw(1) and not(sw(0))));
-    seg(0) <= not((sw(3) and not(sw(2)) and not(sw(1))) or (not(sw(3)) and sw(2) and not(sw(1))) or (not(sw(3)) and not(sw(2)) and sw(1)) or (not(sw(3)) and sw(1) and not(sw(0))));
+    seg(0) <= (not(sw(3)) and not(sw(2)) and not(sw(1))) or (sw(2) and sw(1) and sw(0));
+    seg(1) <= (not(sw(2)) and sw(3)) or (sw(1) and sw(0)) or (not(sw(3)) and not(sw(2)) and sw(0));
+    seg(2) <= sw(0) or (sw(2) and not(sw(1)));
+    seg(3) <= (sw(2) and not(sw(1)) and not(sw(0))) or (sw(2) and sw(1) and sw(0)) or (not(sw(3)) and not(sw(2)) and not(sw(1)) and sw(0));
+    seg(4) <= not(sw(2)) and sw(1) and not(sw(0));
+    seg(5) <= (sw(2) and not(sw(1)) and sw(0)) or (sw(2) and sw(1) and not(sw(0)));
+    seg(6) <= (sw(2) and not(sw(1)) and not(sw(0))) or (not(sw(3)) and not(sw(2)) and not(sw(1)) and sw(0));
 
 end Behavioral;
 

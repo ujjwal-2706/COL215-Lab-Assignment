@@ -33,16 +33,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity timer is
   Port (
-    clock: in std_logic;
-  sel : inout std_logic_vector (1 downto 0) := "11";
-  anode : out std_logic_vector (3 downto 0));
+    mod1e5: in integer;
+    sel : inout std_logic_vector (1 downto 0) := "11";
+    anode : out std_logic_vector (3 downto 0));
 end timer;
 
 architecture Behavioral of timer is
 begin
-    process(clock) is
+    process(mod1e5) is
     begin
-        if(rising_edge(clock))
+        if(mod1e5 = 1)
         then 
           if (sel="00") then sel <= "01"; anode <= "1101" ;
           elsif (sel="01") then sel <= "10"; anode <= "1011" ;
