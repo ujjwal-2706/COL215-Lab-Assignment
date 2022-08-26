@@ -24,7 +24,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -33,108 +33,93 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity StopWatch is
     Port ( 
-        clock : in std_logic;
+        clk : in std_logic;
+        enable_watch : in std_logic;
+        reset_watch : in std_logic;
         an : out std_logic_vector(3 downto 0);
-        seg : out std_logic_vector(6 downto 0);
-        dp : out STD_LOGIC := '1');
+        seg : out std_logic_vector(6 downto 0));
 
 end StopWatch;
 
 
 architecture Structural of StopWatch is
 
-    component counter1e5 is
-        Port ( 
-            clock : in std_logic;
-            count : inout integer := 1
-        );
-    end component;
-
-    component counter1e7 is
-        Port ( 
-            clock : in std_logic;
-            count : inout integer := 1
-        );
-    end component;
-
     component timer is
         Port (
-          mod1e5: in integer;
-          sel : inout std_logic_vector (1 downto 0) := "11";
-          anode : out std_logic_vector (3 downto 0)
-        );
+        clock : in std_logic;
+        sel : inout std_logic_vector (1 downto 0) := "11";
+        anode : out std_logic_vector (3 downto 0) := "1110");
     end component;
     
     component mux is
-    Port ( digit1 : in STD_LOGIC_VECTOR(3 downto 0);
-        digit2 : in STD_LOGIC_VECTOR(3 downto 0);
-        digit3 : in STD_LOGIC_VECTOR(3 downto 0);
-        digit4 : in STD_LOGIC_VECTOR(3 downto 0);
+        Port ( digit1 : in unsigned(3 downto 0);
+        digit2 : in unsigned(3 downto 0);
+        digit3 : in unsigned(3 downto 0);
+        digit4 : in unsigned(3 downto 0);
         sel : in std_logic_vector (1 downto 0);
-        digit_out : out std_logic_vector(3 downto 0));
+        digit_out : out unsigned(3 downto 0) := "0000");
     end component;
     
     component seven_segment is
-        Port  ( sw  :  in STD_LOGIC_VECTOR (3  downto  0 ) ;
-        seg :  out STD_LOGIC_VECTOR(6 downto 0));
+        Port  ( sw  :  in unsigned (3  downto  0 ) ;
+        seg :  out STD_LOGIC_VECTOR(6 downto 0)
+--        -- reduntant
+--        clk : in std_logic;
+--        an : out std_logic_vector (3 downto 0)
+        );
     
-    end component;
-
-    component convert_int is
-        Port (
-        number : in integer;
-        digits : out std_logic_vector (3 downto 0));
     end component;
 
     component modulo1 is
         Port ( 
-            mod2 : in integer;
-            count : inout integer := 0
-        );
+        clock : in std_logic;
+        enable_watch : in std_logic;
+        reset_watch : in std_logic;
+        digit : inout unsigned (3 downto 0) := x"0"
+    );
     end component;
 
     component modulo2 is
         Port ( 
-            mod3 : in integer;
-            count : inout integer := 0
-        );
+        clock : in std_logic;
+        enable_watch : in std_logic;
+        reset_watch : in std_logic;
+        digit : inout unsigned (3 downto 0) := x"0"
+    );
     end component;
 
     component modulo3 is
         Port ( 
-            mod4 : in integer;
-            count : inout integer := 0
-        );
+        clock : in std_logic;
+        enable_watch : in std_logic;
+        reset_watch : in std_logic;
+        digit : inout unsigned (3 downto 0) := x"0"
+    );
     end component;
 
     component modulo4 is
         Port ( 
-            mod1e7 : in integer;
-            count : inout integer := 0
-        );
+        clock : in std_logic;
+        enable_watch : in std_logic;
+        reset_watch : in std_logic;
+        digit : inout unsigned (3 downto 0) := x"0"
+    );
     end component;
 
     -- left one is digit1 and right one is digit4
 
-    signal sel : std_logic_vector(1 downto 0);
-    signal sw : std_logic_vector(3 downto 0);
-    signal digit1,digit2,digit3,digit4 : std_logic_vector(3 downto 0);
-    signal mod1e7,mod1,mod2,mod3,mod4,mod1e5 : integer;
+    signal sel : std_logic_vector(1 downto 0) ;
+    signal sw : unsigned(3 downto 0);
+    signal digit1,digit2,digit3,digit4 : unsigned(3 downto 0);
 
 begin
-    T : timer port map(mod1e5, sel, an);
+    T : timer port map(clk, sel, an);
     M : mux port map(digit1, digit2, digit3, digit4, sel, sw);
     SS : seven_segment port map(sw, seg);
-    convert1 : convert_int port map(mod1,digit1);
-    convert2 : convert_int port map(mod2,digit2);
-    convert3 : convert_int port map(mod3,digit3);
-    convert4 : convert_int port map(mod4,digit4);
-    count1e7 : counter1e7 port map(clock,mod1e7);
-    count1e5 : counter1e5 port map(clock,mod1e5); 
-    modu1 : modulo1 port map (mod2,mod1);
-    modu2 : modulo2 port map (mod3,mod2);
-    modu3 : modulo3 port map (mod4,mod3);
-    modu4 : modulo4 port map (mod1e7,mod4);
+    modu1 : modulo1 port map (clk,enable_watch,reset_watch,digit1);
+    modu2 : modulo2 port map (clk,enable_watch,reset_watch,digit2);
+    modu3 : modulo3 port map (clk,enable_watch,reset_watch,digit3);
+    modu4 : modulo4 port map (clk,enable_watch,reset_watch,digit4);
 
 end Structural;
 

@@ -24,7 +24,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -33,20 +33,32 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity modulo4 is
     Port ( 
-        mod1e7 : in integer;
-        count : inout integer := 0
+        clock : in std_logic;
+        enable_watch : in std_logic;
+        reset_watch : in std_logic;
+        digit : inout unsigned (3 downto 0) := x"0"
     );
 end modulo4;
 
 architecture Behavioral of modulo4 is
+signal counter : unsigned (35 downto 0) := x"000000001";
 begin
-    process(mod1e7) is
+    process(clock) is
     begin
-        if(mod1e7 = 1) then
-            if(count = 9) then
-                count <= 0;
+        if reset_watch = '1' then
+            counter <= x"000000001";
+            digit <= x"0";
+        elsif rising_edge(clock) and enable_watch = '1' then
+            -- when counter = 1e7
+            if counter = x"000989680" then
+                counter <= x"000000001";
+                if digit = x"9" then
+                    digit <= x"0";
+                else 
+                    digit <= digit + 1;
+                end if;
             else 
-                count <= count + 1;
+                counter <= counter + 1;
             end if;
         end if;
     end process;
