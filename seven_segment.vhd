@@ -33,9 +33,6 @@ use IEEE.NUMERIC_STD.ALL;
 entity seven_segment is
     Port  ( sw  :  in unsigned (3  downto  0 ) ;
         seg :  out STD_LOGIC_VECTOR(6 downto 0)
---        -- reduntant
---        clk : in std_logic;
---        an : out std_logic_vector (3 downto 0)
         );
 end seven_segment;
 

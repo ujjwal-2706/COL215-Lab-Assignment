@@ -48,7 +48,7 @@ begin
         if reset_watch = '1' then
             counter <= x"000000001";
             digit <= x"0";
-        elsif rising_edge(clock) then
+        elsif rising_edge(clock) and enable_watch='1' then
             -- when counter = 1e8
             if counter = x"005F5E100" then
                 counter <= x"000000001";
