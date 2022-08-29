@@ -47,6 +47,6 @@ begin
     digit_out(1) <= (not(sel(0)) and not(sel(1)) and digit1(1)) or (not(sel(1)) and (sel(0)) and digit2(1)) or ((sel(1)) and not(sel(0)) and digit3(1)) or ((sel(0)) and (sel(1)) and digit4(1));  
     digit_out(2) <= (not(sel(0)) and not(sel(1)) and digit1(2)) or (not(sel(1)) and (sel(0)) and digit2(2)) or ((sel(1)) and not(sel(0)) and digit3(2)) or ((sel(0)) and (sel(1)) and digit4(2));  
     digit_out(3) <= (not(sel(0)) and not(sel(1)) and digit1(3)) or (not(sel(1)) and (sel(0)) and digit2(3)) or ((sel(1)) and not(sel(0)) and digit3(3)) or ((sel(0)) and (sel(1)) and digit4(3));  
-    dp <= not(sel(0)); 
+    dp <= sel(0); 
 end Behavioral;
 

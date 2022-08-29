@@ -33,9 +33,9 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity StopWatch is
     Port ( 
-        start_button : in std_logic;
-        pause_button : in std_logic;
-        reset_button : in std_logic;
+        btnC : in std_logic;
+        btnU : in std_logic;
+        btnL : in std_logic;
         clk : in std_logic;
         an : out std_logic_vector(3 downto 0);
         seg : out std_logic_vector(6 downto 0);
@@ -122,21 +122,18 @@ begin
             if (rising_edge(clk)) then 
                 if (counter = x"186A0") then 
                     counter <= x"00001";
+                     if (btnC='1') then
+                        enable_watch <= '1';
+                        reset_watch <= '0';
+                     elsif (btnU='1') then 
+                        enable_watch <= '0';
+                        reset_watch <= '0';
+                     elsif (btnL='1') then 
+                        reset_watch <= '1';
+                     end if;
                 else 
                     counter <= counter + 1;
                 end if;
-            end if;
-    end process;
-    process(counter) is
-        begin
-            if (start_button='1') then
-                enable_watch <= '1';
-                reset_watch <= '0';
-            elsif (pause_button='1') then 
-                enable_watch <= '0';
-                reset_watch <= '0';
-            elsif (reset_button='1') then 
-                reset_watch <= '1';
             end if;
     end process;
     T : timer port map(clk, sel, an);
