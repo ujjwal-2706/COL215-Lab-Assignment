@@ -38,8 +38,8 @@ entity StopWatch is
         reset_button : in std_logic;
         clk : in std_logic;
         an : out std_logic_vector(3 downto 0);
-        seg : out std_logic_vector(6 downto 0));
-        dp : out std_logic;
+        seg : out std_logic_vector(6 downto 0);
+        dp : out std_logic);
 end StopWatch;
 
 
@@ -58,8 +58,8 @@ architecture Structural of StopWatch is
         digit3 : in unsigned(3 downto 0);
         digit4 : in unsigned(3 downto 0);
         sel : in std_logic_vector (1 downto 0);
-        digit_out : out unsigned(3 downto 0) := "0000");
-        dp : out std_logic;
+        digit_out : out unsigned(3 downto 0) := "0000";
+        dp : out std_logic);
     end component;
     
     component seven_segment is
@@ -147,4 +147,5 @@ begin
     modu3 : modulo3 port map (clk,enable_watch,reset_watch,digit3);
     modu4 : modulo4 port map (clk,enable_watch,reset_watch,digit4);
 end Structural;
+
 

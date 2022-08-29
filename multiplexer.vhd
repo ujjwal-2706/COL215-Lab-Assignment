@@ -37,8 +37,8 @@ entity mux is
         digit3 : in unsigned(3 downto 0);
         digit4 : in unsigned(3 downto 0);
         sel : in std_logic_vector (1 downto 0);
-        digit_out : out unsigned(3 downto 0) := "0000");
-        dp : out std_logic := '0';
+        digit_out : out unsigned(3 downto 0) := "0000";
+        dp : out std_logic := '0');
 end mux;
 
 architecture Behavioral of mux is
@@ -49,3 +49,4 @@ begin
     digit_out(3) <= (not(sel(0)) and not(sel(1)) and digit1(3)) or (not(sel(1)) and (sel(0)) and digit2(3)) or ((sel(1)) and not(sel(0)) and digit3(3)) or ((sel(0)) and (sel(1)) and digit4(3));  
     dp <= not(sel(0)); 
 end Behavioral;
+
