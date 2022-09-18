@@ -1,0 +1,95 @@
+{
+  "main": {
+    "id": "cc89ab5b3de97260",
+    "type": "split",
+    "children": [
+      {
+        "id": "1dd4d4faabf9a4d1",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "assignment-1.md",
+            "mode": "preview",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f5bf6cffcf0f3407",
+    "type": "split",
+    "children": [
+      {
+        "id": "f83030dfa2b3c108",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b001651608455a7c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "b8f601c4a9d0845e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "aa46bbaaf639bffa",
+    "type": "split",
+    "children": [
+      {
+        "id": "cf4c8d033a89bf6c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cc194b44ad5fa6ff",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "assignment-1.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "1dd4d4faabf9a4d1",
+  "lastOpenFiles": [
+    "assignment-1.md",
+    "BlockDiagram.png"
+  ]
+}
