@@ -35,7 +35,7 @@ signal addr : unsigned(15 downto 0) := x"0000";
 signal read_out : signed(7 downto 0);
 begin
     clk <= not(clk) after 10 ns;
-    ROM_MEM1 : ROM_MEM port map(clk, load_enable, addr, read_out)
+    ROM_MEM1 : ROM_MEM port map(clk, load_enable, addr, read_out);
     process is 
     begin
         wait for 10 ns;
