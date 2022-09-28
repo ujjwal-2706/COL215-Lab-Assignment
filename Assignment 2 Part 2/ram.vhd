@@ -36,9 +36,9 @@ entity ram is
   clk :in std_logic;
   ctrl : in std_logic;
   write_enable : in std_logic;
-  write_addr : in unsigned(12 downto 0);
-  read_act_addr : in unsigned(12 downto 0);
-  read_weight_addr : in unsigned(12 downto 0);
+  write_addr : in unsigned(11 downto 0);
+  read_act_addr : in unsigned(11 downto 0);
+  read_weight_addr : in unsigned(11 downto 0);
   input_mac : in signed(15 downto 0);
   input_ram : in signed(15 downto 0);
   output_act : out signed(15 downto 0);
