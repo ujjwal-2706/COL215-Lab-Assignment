@@ -42,7 +42,7 @@ WEIGHT_FILE_NAME: string := "weights_bias.mif"
 );
     Port (
     clk : in std_logic;
-    load_enable : in std_logic;
+    read_enable : in std_logic;
     addr : in unsigned(15 downto 0);
     read_out : out signed(7 downto 0)
   );
@@ -78,11 +78,12 @@ signal rom_block: mem_type := init_mem(IMAGE_FILE_NAME);
 signal rom_block_weight : mem_type := init_mem(WEIGHT_FILE_NAME);
 signal AA : mem_type := (others => x"00");
 begin
-   read_out <= signed(AA(to_integer(addr)));
    process(clk) is
    begin
     if rising_edge(clk) then
-        if load_enable = '0' then 
+        if read_enable = '1' then 
+            read_out <= signed(AA(to_integer(addr)));
+        else
             AA <= load_memory(rom_block,rom_block_weight);
         end if;
     end if;
