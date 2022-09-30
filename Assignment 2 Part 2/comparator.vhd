@@ -34,12 +34,16 @@ use IEEE.NUMERIC_STD.ALL;
 entity comparator is
   Port ( 
     comparator_enable : in std_logic;
-    input1 : inout signed(15 downto 0);
-    input2 : in signed(15 downto 0));
+    input1 : inout signed(15 downto 0) := x"ffff";
+    input2 : in signed(15 downto 0);
+    address : inout integer := 0;
+    index : in integer
+  );
 end comparator;
 
 architecture Behavioral of comparator is
 
 begin
 input1 <= input2 when ((input1 < input2) and (comparator_enable = '1')) else input1;
+address <= index when ((input1 < input2) and (comparator_enable = '1')) else address;
 end Behavioral;
