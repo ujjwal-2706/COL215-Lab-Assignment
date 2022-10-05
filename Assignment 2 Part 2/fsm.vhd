@@ -34,161 +34,264 @@ use IEEE.NUMERIC_STD.ALL;
 entity fsm is
     Port (
         clk : in std_logic;
+        state : inout integer := 0;
+
         write_addr_ram : out unsigned(11 downto 0);
+        write_enable_ram : out std_logic := '0';
         read_act_addr_ram : out unsigned(11 downto 0);
-        read_weight_addr_ram : out unsigned(11 downto 0) : = x"000";
+        read_weight_addr_ram : out unsigned(11 downto 0) := x"000";
+
         write_addr_local : out unsigned(11 downto 0);
+        write_enable_local : out std_logic := '0';
         read_act_addr_local : out unsigned(11 downto 0);
         read_weight_addr_local : out unsigned(11 downto 0);
+
         read_enable_rom : out std_logic := '0';
         addr_rom : out unsigned(15 downto 0);
+
         mac_ctrl : out std_logic := '0';
-        comparator_enable : out std_logic := '0';
-        state : out integer
+
+        comparator_enable : out std_logic := '0'
     );
 end fsm;
 
 architecture Behavioral of fsm is
-signal state : integer := 0;
 signal write_addr_ram_counter : unsigned(11 downto 0) := x"000" ;
 signal write_addr_local_counter : unsigned(11 downto 0) := x"000"; 
 signal read_addr_rom : unsigned(15 downto 0) := x"0000";
 signal read_addr_ram_counter : unsigned(11 downto 0) := x"000" ;
 signal read_act_addr_local_counter : unsigned(11 downto 0) := x"000";
 signal read_weight_addr_local_counter : unsigned(11 downto 0) := x"310"; -- 784 value
-signal counter_layer_hidden : integer := 0;
-signal counter_layer_final : integer := 0;
 begin
 process(clk) is
 begin
-    if state = 0  then -- state 0 involves loading of image, weights, and bias files onto ROM
-        read_enable_rom <= '1';
-        state <= 1;
-    elsif state = 1 then -- state 1 involves loading of image from ROM into local memory, remember to extend the image to 16 bits
-        addr_rom <= read_addr_rom;
-        write_addr_local <= write_addr_local_counter;
-        write_addr_local_counter <= write_addr_local_counter + 1;
-        if read_addr_rom = x"30F" then 
-            read_addr_rom <= x"400";
-            state <= 2;
-        else
+    if(rising_edge(clk)) then
+        if state = 0  then -- state 0 involves loading of image, weights, and bias files onto ROM
+            read_enable_rom <= '1';
+            state <= 1;
+            write_enable_local <= '1';
+            addr_rom <= read_addr_rom;
             read_addr_rom <= read_addr_rom + 1;
-        end if;
-    elsif state = 2 then -- this state involves loading of a column of the weight matrix from the ROM into local memory
-        addr_rom <= read_addr_rom;
-
-        write_addr_local_counter <= write_addr_local_counter + 1;
-        write_addr_local <= write_addr_local_counter;
-
-        if write_addr_local <= x"61F" then -- 1567 (2*784-1)
-            write_addr_local_counter <= x"310"; -- 784
-            state <= 3;
-        else 
-            read_addr_rom <= read_addr_rom + 1; 
-        end if;
-    elsif state = 3 then -- this state involves multiplication of the image matrix with the previously loaded column of the weight matrix
-        if read_act_addr_local_counter = x"000" then 
-            mac_ctrl <= '1';
-        else 
-            mac_ctrl <= '0';
-        end if;
-
-        read_act_addr_local <= read_act_addr_local_counter;
-        read_weight_addr_local <= read_weight_addr_local_counter;
-
-        if read_act_addr_local_counter = x"30F" then
-            read_act_addr_local_counter <= x"000";
-            read_weight_addr_local_counter <= x"310"; -- 784
-
-            read_act_addr_local <= x"000";
-            read_weight_addr_local <= x"310"; -- 784
-
-            write_addr_ram_counter <= write_addr_ram_counter + 1;
-            state <= 2;
-            counter_layer_hidden <= counter_layer_hidden + 1;
-            if counter_layer_hidden = 63 then
-                write_addr_local_counter <= x"000";
-                state <= 4;
-                write_addr_ram_counter <= x"000";
-            end if;
-        else
-            read_act_addr_local_counter <= read_act_addr_local_counter + 1;
-            read_weight_addr_local_counter <= read_weight_addr_local_counter + 1;
-        end if;
-        write_addr_ram <= write_addr_ram_counter;
-
-    elsif state = 4 then -- this state involves adding the bias to the result obtained at state 3
-        addr_rom <= read_addr_rom;
-        read_act_addr_ram <= read_act_addr_ram + 1;
-        read_addr_rom <= read_addr_rom + 1;
-        write_addr_ram <= write_addr_ram_counter;
-        write_addr_ram_counter <= write_addr_ram_counter + 1;
-        if write_addr_ram_counter = x"03F" then
-            state <= 5;
-        end if;
-    
-    elsif state = 5 then -- this state writes the computed values back into the local memory from the RAM
-        read_addr_ram_counter <= read_addr_ram_counter + 1;
-        read_addr_ram <= read_addr_ram_counter;
-        write_addr_local <= write_addr_local_counter;
-        if write_addr_local_counter = x"03f" then
-            state <= 6;
-        else 
+        elsif state = 1 then -- state 1 involves loading of image from ROM into local memory, remember to extend the image to 16 bits
+            addr_rom <= read_addr_rom;
+            write_addr_local <= write_addr_local_counter;
             write_addr_local_counter <= write_addr_local_counter + 1;
-        end if;
-    elsif state = 6 then 
-        addr_rom <= read_addr_rom;
-        write_addr_local_counter <= write_addr_local_counter + 1;
-        write_addr_local <= write_addr_local_counter;
-        if write_addr_local_counter = x"07F" then -- 127 (2*64-1)
-            write_addr_local_counter <= x"040"; -- 64
-            state <= 7;
-        end if;
-    elsif state = 7 then
-        if read_act_addr_local_counter = x"000" then 
-            mac_ctrl <= '1';
-        else 
-            mac_ctrl <= '0';
-        end if;
-        read_act_addr_local <= read_act_addr_local_counter;
-        read_weight_addr_local <= read_weight_addr_local_counter;
-        if read_act_addr_local_counter = x"03F" then -- 63
-            read_act_addr_local_counter <= x"000";
-            read_weight_addr_local_counter <= x"040"; -- 64
-            read_act_addr_local <= x"000";
-            read_weight_addr_local <= x"040"; -- 64
-            write_addr_ram_counter <= write_addr_ram_counter + 1;
-            state <= 6;
-            counter_layer_final <= counter_layer_final + 1;
-            if counter_layer_final = 9 then
-                write_addr_local_counter <= x"000";
-                comparator_enable <= '1';
+            if read_addr_rom = x"0310" then
+                addr_rom <= x"0400";
+                read_addr_rom <= x"0401";
+                state <= 2;
+            else
+                read_addr_rom <= read_addr_rom + 1;
+            end if;
+        elsif state = 2 then -- this state involves loading of a column of the weight matrix from the ROM into local memory
+            addr_rom <= read_addr_rom;
+            write_enable_ram <= '0';
+    
+            write_addr_local_counter <= write_addr_local_counter + 1;
+            write_addr_local <= write_addr_local_counter;
+    
+            if write_addr_local_counter = x"61F" then -- 1567 (2*784-1)
+                write_addr_local_counter <= x"310"; -- 784
+                state <= 3;
+            else 
+                read_addr_rom <= read_addr_rom + 1; 
+            end if;
+        elsif state = 3 then -- this state involves multiplication of the image matrix with the previously loaded column of the weight matrix
+            write_enable_local <= '0';
+            if read_act_addr_local_counter = x"000" then 
+                mac_ctrl <= '1';
+            else 
+                mac_ctrl <= '0';
+            end if;
+    
+            read_act_addr_local <= read_act_addr_local_counter;
+            read_weight_addr_local <= read_weight_addr_local_counter;
+    
+            if read_act_addr_local_counter = x"30F" then
+                read_act_addr_local_counter <= x"000";
+                read_weight_addr_local_counter <= x"310"; -- 784
+                write_enable_ram <= '1';
+                write_enable_local <= '1';
+                write_addr_ram <= write_addr_ram_counter;
+                read_act_addr_ram <= read_addr_ram_counter;
+                if write_addr_ram_counter = x"03F" then
+                    state <= 4;
+                    read_addr_ram_counter <= x"000";
+                    write_addr_local_counter <= x"61F";
+                    
+                    read_weight_addr_local_counter <= x"040";
+                else 
+                    write_addr_ram_counter <= write_addr_ram_counter + 1;
+                    read_addr_ram_counter <= read_addr_ram_counter + 1;
+                    write_addr_local_counter <= write_addr_local_counter-1;
+                    addr_rom <= read_addr_rom;
+                    state <= 2;
+                end if;
+
+            else
+                read_act_addr_local_counter <= read_act_addr_local_counter + 1;
+                read_weight_addr_local_counter <= read_weight_addr_local_counter + 1;
+            end if;
+    
+        elsif state = 4 then -- this state involves loading the bias into local memory
+            write_enable_ram <= '0';
+            
+            write_addr_local <= write_addr_local_counter;
+            write_addr_local_counter <= write_addr_local_counter + 1;
+           
+            if read_addr_rom /= x"c841" then 
+                addr_rom <= read_addr_rom;
+            end if;
+            
+            if write_addr_local_counter = x"660" then
+                state <= 10; -- state 10 involves adding bias
                 read_addr_ram_counter <= x"000";
-                read_addr_ram <= x"000";
                 write_addr_ram_counter <= x"000";
-                write_addr_ram <= x"000";
-                state <= 8;
+                write_enable_local <= '0';
+                read_act_addr_local_counter <= x"620";
+            else
+                read_addr_rom <= read_addr_rom + 1;
+            end if; 
+        
+        elsif state = 5 then -- this state writes the computed values back into the local memory from the RAM
+            read_addr_ram_counter <= read_addr_ram_counter + 1;
+            read_act_addr_ram <= read_addr_ram_counter;
+            write_addr_local <= write_addr_local_counter;
+            if write_addr_local_counter = x"040" then
+                write_addr_ram_counter <= x"000";
+                write_enable_local <= '1';
+                state <= 6;
+                read_addr_ram_counter <= x"000";
+            else 
+                write_addr_local_counter <= write_addr_local_counter + 1;
+            end if;
+        elsif state = 6 then -- this state loads weights for second layer
+            write_enable_ram <= '0';
+            addr_rom <= read_addr_rom;
+            
+            write_addr_local_counter <= write_addr_local_counter + 1;
+            write_addr_local <= write_addr_local_counter;
+            
+            if write_addr_local_counter = x"07F" then -- 127 (2*64-1)
+                write_addr_local_counter <= x"040"; -- 64
+                write_enable_local <= '0';
+                read_act_addr_local_counter <= x"000";
+                state <= 7;
+            else
+                read_addr_rom <= read_addr_rom + 1;
+            end if;
+       elsif state = 7 then -- this state involves multiplication of the image matrix with the previously loaded column of the weight matrix
+             write_enable_local <= '0';
+             if read_act_addr_local_counter = x"000" then 
+                 mac_ctrl <= '1';
+             else 
+                 mac_ctrl <= '0';
+             end if;
+     
+             read_act_addr_local <= read_act_addr_local_counter;
+             read_weight_addr_local <= read_weight_addr_local_counter;
+     
+             if read_act_addr_local_counter = x"03F" then
+                 read_act_addr_local_counter <= x"000";
+                 read_weight_addr_local_counter <= x"040"; -- 64
+                 write_enable_ram <= '1';
+                 write_enable_local <= '1';
+                 write_addr_ram <= write_addr_ram_counter;
+                 if write_addr_ram_counter = x"009" then
+                     state <= 8;
+                     read_addr_ram_counter <= x"000";
+                     write_addr_local_counter <= x"07F";
+                 else 
+                     write_addr_ram_counter <= write_addr_ram_counter + 1;
+                     write_addr_local_counter <= write_addr_local_counter-1;
+                     addr_rom <= read_addr_rom;
+                     write_enable_local <= '1';
+                     state <= 6;
+                 end if;
+             else
+                 read_act_addr_local_counter <= read_act_addr_local_counter + 1;
+                 read_weight_addr_local_counter <= read_weight_addr_local_counter + 1;
+             end if;
+        elsif state = 8 then -- this state involves loading the bias into local memory
+             write_enable_ram <= '0';
+             
+             write_addr_local <= write_addr_local_counter;
+             write_addr_local_counter <= write_addr_local_counter + 1;
+             
+             read_addr_rom <= read_addr_rom+1;
+             addr_rom <= read_addr_rom;
+             
+             if write_addr_local_counter = x"08a" then
+                 state <= 11; -- state 11 involves adding bias
+                 read_addr_ram_counter <= x"000";
+                 write_addr_ram_counter <= x"000";
+                 write_enable_local <= '0';
+                 read_act_addr_local_counter <= x"080";
+             end if; 
+        elsif state = 9 then-- this state computes the maximum over the final values computed by the neural network
+            if read_addr_ram_counter /= x"00A" then
+                comparator_enable <= '1';
+                read_addr_ram_counter <= read_addr_ram_counter + 1;
+                read_act_addr_ram <= read_addr_ram_counter;
+            else
+                comparator_enable <= '0';
+            end if;
+        elsif state = 10 then -- this state adds the bias back into RAM itself
+            write_enable_ram <= '1';
+            write_addr_ram <= write_addr_ram_counter;
+            write_addr_ram_counter <= write_addr_ram_counter + 1;
+            
+            read_act_addr_ram <= read_addr_ram_counter;
+            read_addr_ram_counter <= read_addr_ram_counter + 1;
+            
+            read_act_addr_local <= read_act_addr_local_counter;
+            read_act_addr_local_counter <= read_act_addr_local_counter + 1;
+            if write_addr_ram_counter = x"040" then 
+                state <= 12; -- state 12 does the shifting
+                write_addr_ram_counter <= x"000";
+                read_addr_Ram_counter <= x"000";
+            end if;
+        elsif state = 11 then
+            write_enable_ram <= '1';
+            write_addr_ram <= write_addr_ram_counter;
+            write_addr_ram_counter <= write_addr_ram_counter + 1;
+            
+            read_act_addr_ram <= read_addr_ram_counter;
+            read_addr_ram_counter <= read_addr_ram_counter + 1;
+            
+            read_act_addr_local <= read_act_addr_local_counter;
+            read_act_addr_local_counter <= read_act_addr_local_counter + 1;
+            if write_addr_ram_counter = x"00a" then 
+                write_addr_ram_counter <= x"000";
+                state <= 13; -- state 13 does the shifting
+                read_addr_ram_counter <= x"000";
+            end if;
+        elsif state = 12 then
+            write_addr_ram <= write_addr_ram_counter;
+            write_addr_ram_counter <= write_addr_ram_counter + 1;
+            
+            read_act_addr_ram <= read_addr_ram_counter;
+            read_addr_ram_counter <= read_addr_ram_counter + 1;
+            if write_addr_ram_counter = x"040" then 
+                state <= 5; -- state 5 loads back into local memory from ram
+                write_addr_ram_counter <= x"000";
+                read_addr_ram_counter <= x"000";
+                write_addr_local_counter <= x"000";
+                write_enable_ram <= '0';
+                write_enable_local <= '1';
             end if;
         else
-            read_act_addr_local_counter <= read_act_addr_local_counter + 1;
-            read_weight_addr_local_counter <= read_weight_addr_local_counter + 1;
-        end if;
-        write_addr_ram <= write_addr_ram_counter;
-    elsif state = 8 then
-        addr_rom <= read_addr_rom;
-        read_act_addr_ram <= read_act_addr_ram + 1;
-        read_addr_rom <= read_addr_rom + 1;
-        write_addr_ram <= write_addr_ram_counter;
-        write_addr_ram_counter <= write_addr_ram_counter + 1;
-        if write_addr_ram_counter = x"009" then
-            read_addr_ram_counter <= x"000";
-            comparator_enable <= '1';
-            state <= 9;
-        end if;
-    else -- this state computes the maximum over the final values computed by the neural network
-        if read_addr_ram_counter /= x"00A" then
+            write_addr_ram <= write_addr_ram_counter;
+            write_addr_ram_counter <= write_addr_ram_counter + 1;
+            
+            read_act_addr_ram <= read_addr_ram_counter;
             read_addr_ram_counter <= read_addr_ram_counter + 1;
-            read_addr_ram <= read_addr_ram_counter;
+            if write_addr_ram_counter = x"00a" then 
+                state <= 9; -- state 9 does the final evaluation
+                write_addr_ram_counter <= x"000";
+                read_addr_ram_counter <= x"000";
+                write_enable_ram <= '0';
+            end if;        
         end if;
     end if;
 end process;

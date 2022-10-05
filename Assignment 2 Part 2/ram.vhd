@@ -35,6 +35,7 @@ entity ram is
   Port ( 
   clk :in std_logic;
   write_addr : in unsigned(11 downto 0);
+  write_enable : in std_logic;
   read_act_addr : in unsigned(11 downto 0);
   read_weight_addr : in unsigned(11 downto 0);
   write_input : in signed(15 downto 0);
@@ -43,7 +44,7 @@ entity ram is
 end ram;
 
 architecture Behavioral of ram is
-type first_layer is array(3135 downto 0) of signed(15 downto 0);
+type first_layer is array(3235 downto 0) of signed(15 downto 0);
 signal layer : first_layer := (others => x"0000");
 begin
     output_act <= layer(to_integer(read_act_addr));
@@ -51,7 +52,9 @@ begin
     process(clk) is
     begin
         if rising_edge(clk) then
-            layer(to_integer(write_addr)) <= write_input;
+            if write_enable = '1' then 
+                layer(to_integer(write_addr)) <= write_input;
+            end if;
         end if;
     end process;
 

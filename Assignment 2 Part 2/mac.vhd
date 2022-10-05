@@ -54,9 +54,9 @@ process(clk) is
 begin
     if rising_edge(clk) then
         if ctrl = '1' then
-           accum <= multiply(23 downto 8);
+           accum <= multiply(15 downto 0);
         else
-           accum <= accum + multiply(23 downto 8);
+           accum <= accum + multiply(15 downto 0);
         end if;
     end if;
 end process;
