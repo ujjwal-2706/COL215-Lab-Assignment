@@ -108,7 +108,7 @@ def is_legal_region(kmap_function, term):
     if len(final_rows) > 1 and final_rows[0] +1 != final_rows[1]:
         topLeft[0] = final_rows[len(final_rows)-1]
         bottomRight[0] = final_rows[0]
-    if len(final_cols) > 0 and final_cols[0] + 1 != final_cols[1]:
+    if len(final_cols) > 1 and final_cols[0] + 1 != final_cols[1]:
         topLeft[1] = final_cols[len(final_cols)-1]
         bottomRight[1] = final_cols[0]
     return ((topLeft[0],topLeft[1]),(bottomRight[0],bottomRight[1]),legal)
