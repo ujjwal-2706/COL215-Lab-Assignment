@@ -49,7 +49,20 @@ def all_possible_terms_check(reduced_term,remaining_term,possible_terms):
         if final_term not in possible_terms:
             return False
     return True
-
+def intermediate_term_print(reduced_term,remaining_term):
+    if len(reduced_term) == 0:
+        remaining_term.sort()
+        final_term = "".join(remaining_term)
+        print(f"Terms used to reduce : {[final_term]}")
+    else:
+        produced_terms = produce_terms(reduced_term)
+        answer = []
+        for terms in produced_terms:
+            terms.extend(remaining_term)
+            terms.sort()
+            final_term = "".join(terms)
+            answer.append(final_term)
+        print(f"Terms used to reduce : {answer}")
 def maximal_expansion(possible_terms,term):
     remaining_term = break_literal(term)
     reduced_term = []
@@ -59,7 +72,11 @@ def maximal_expansion(possible_terms,term):
             remaining_term[index] = complement(remaining_term[index])
             reduce_temp = [val for val in reduced_term]
             if all_possible_terms_check(reduce_temp,remaining_term,possible_terms):
+                reduce_new = [val for val in reduced_term]
+                remaining_new = [val for val in remaining_term]
                 reduction_possible = True
+                #uncomment this line to print intermediate terms
+                # intermediate_term_print(reduce_new,remaining_new)
                 value = remaining_term.pop(index)
                 reduced_term.append(value)
                 break
@@ -80,5 +97,5 @@ def comb_function_expansion(func_TRUE, func_DC):
         value = maximal_expansion(possible_terms,term)
         answer.append(value)
     return answer
-value = comb_function_expansion(["a'bc'd'", "abc'd'", "a'b'c'd", "a'bc'd", "a'b'cd"], ["abc'd"])
-print(value)
+# value = comb_function_expansion( ["abc'd"],["a'bc'd'", "abc'd'", "a'b'c'd", "a'bc'd", "a'b'cd"])
+# print(value)
