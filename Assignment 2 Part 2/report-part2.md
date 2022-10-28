@@ -81,3 +81,32 @@ Below is the datapath for our design. Every bus transfers 16 bits unless mention
 This entity combines the FSM, Datapath and the Seven Segement Decoder to obtain the overall Neural Network, in the following manner.
 
 ![](NeuralNetwork_BD.png)
+
+## Simulation Screenshots
+Below we have attached the screenshots obtained from the simulation of the `NeuralNetwork` entity, with the various `mif` files as inputs. We have only captured the last few clock cycles that include the output of our entity, as the simulation duration was quite long. Simulated waveforms for the individual entities were submitted previously.
+
+`imgdata_digit0.mif`
+![](image-0.png)
+
+`imgdata_digit1.mif`
+![](image-1.png)
+
+`imgdata_digit2.mif`
+![](image-2.png)
+
+`imgdata_digit3.mif`
+![](image-3.png)
+
+`imgdata_digit4.mif`
+![](image-4.png)
+
+`imgdata_digit5.mif`
+![](image-5.png)
+
+`imgdata_digit6.mif`
+![](image-6.png)
+
+`imgdata_digit7.mif`
+![](image-7.png)
+
+

@@ -97,5 +97,5 @@ def comb_function_expansion(func_TRUE, func_DC):
         value = maximal_expansion(possible_terms,term)
         answer.append(value)
     return answer
-# value = comb_function_expansion( ["abc'd"],["a'bc'd'", "abc'd'", "a'b'c'd", "a'bc'd", "a'b'cd"])
-# print(value)
+ value = comb_function_expansion(["a'b'c'd'e'", "a'b'cd'e", "a'b'cde'", "a'bc'd'e'", "a'bc'd'e", "a'bc'de", "a'bc'de'", "ab'c'd'e'", "ab'cd'e'"], ["abc'd'e'", "abc'd'e", "abc'de", "abc'de'"])
+ print(value)
