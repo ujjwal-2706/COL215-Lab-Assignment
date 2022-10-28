@@ -75,7 +75,11 @@ def maximal_expansion(possible_terms,term):
                 reduce_new = [val for val in reduced_term]
                 remaining_new = [val for val in remaining_term]
                 reduction_possible = True
-                #uncomment this line to print intermediate terms
+                #uncomment these lines to print intermediate terms
+                # remaining_new[index] = complement(remaining_new[index])
+                # term = ''.join(remaining_new)
+                # print(f"Expanded Term is : {term}")
+                # remaining_new[index] = complement(remaining_new[index])
                 # intermediate_term_print(reduce_new,remaining_new)
                 value = remaining_term.pop(index)
                 reduced_term.append(value)
@@ -97,5 +101,5 @@ def comb_function_expansion(func_TRUE, func_DC):
         value = maximal_expansion(possible_terms,term)
         answer.append(value)
     return answer
- value = comb_function_expansion(["a'b'c'd'e'", "a'b'cd'e", "a'b'cde'", "a'bc'd'e'", "a'bc'd'e", "a'bc'de", "a'bc'de'", "ab'c'd'e'", "ab'cd'e'"], ["abc'd'e'", "abc'd'e", "abc'de", "abc'de'"])
- print(value)
+# value = comb_function_expansion(['abc',"a'bc"],["abc'","ab'c","ab'c'"])
+# print(value)

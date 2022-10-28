@@ -53,3 +53,25 @@ func_TRUE = ["a'b'c'd'e'", "a'b'cd'e", "a'b'cde'", "a'bc'd'e'",
 func_DC = ["abc'd'e'", "abc'd'e", "abc'de", "abc'de'"]
 ```
 Output:
+
+```
+["c'd'e'", "a'b'cd'e", "a'b'cde'", "c'd'e'", "bc'", "bc'", "bc'", "c'd'e'", "ab'd'e'"]
+```
+
+### Case 3 :
+
+------
+
+Input : 
+
+```
+func_TRUE = ['abc',"a'bc"]
+func_DC = ["abc'","ab'c","ab'c'"]
+```
+
+Output:
+
+```
+['bc', 'bc']
+```
+
