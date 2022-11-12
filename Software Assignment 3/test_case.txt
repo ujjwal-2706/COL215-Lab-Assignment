@@ -1,0 +1,21 @@
+func_TRUE = ["a'b'c'd'e'f", "a'b'c'de'f'", "a'b'cd'e'f", "a'b'cde'f'", "a'bc'd'e'f", "a'bc'd'ef", "a'bc'de'f'", "a'bc'def", "a'bcd'e'f", "a'bcd'ef'", "a'bcd'ef", "a'bcde'f'", "ab'c'd'e'f", "ab'cd'e'f'", "ab'cd'e'f", "ab'cd'ef'", "ab'cd'ef", "ab'cde'f'", "ab'cde'f", "ab'cdef'", "ab'cdef", "abc'd'e'f", "abc'de'f", "abcd'e'f"]
+func_DC = ["a'b'c'd'e'f'", "abc'def'"]
+
+
+func_TRUE = ["a'b'c'd'", "a'bc'd", "abc'd'", "ab'c'd'", "a'bcd", "ab'cd"]
+func_DC = ["a'b'cd", "abcd"]
+
+
+func_TRUE = ["abcdefghijklmno", "abcdefghijklm'n'o'", "abcdefghijklmn'o", "abcdefghijklm'n'o", "abcdefghijklm'no'"]
+func_DC = ["abcdefghijklm'no", "abcdefghijklmn'o'", "abcdefghijklmno'"]
+
+
+
+
+[11/11, 10:28 pm] Kushal Gupta: ----------------Final result-----------------------
+The final output is: ["d'e'f", "a'de'f'", "a'bc'ef", "a'bcd'e", "ab'c", "abc'de'f"]
+[11/11, 10:28 pm] Kushal Gupta: ----------------Final result-----------------------
+The final output is: ["a'b'c'd'", "a'bd", "ac'd'", "b'cd"]
+[11/11, 10:28 pm] Kushal Gupta: ----------------Final result-----------------------
+The final output is: ['abcdefghijkl']
+[11/11, 10:28 pm] Kushal Gupta: Ye sw3 ka output

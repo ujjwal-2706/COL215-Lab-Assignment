@@ -116,24 +116,6 @@ def comb_function_expansion(func_TRUE, func_DC):
         value,terms_used = maximal_expansion(possible_terms,term)
         answer.append(value)
     return answer
-# value = comb_function_expansion(['abc',"a'bc"],["abc'","ab'c","ab'c'"])
-# print(value)
-
-#this function will check if a given literal term is subsequence of other or not
-def subsequence_check(literal_list1,literal_list2):
-    if len(literal_list1) < len(literal_list2):
-        pointer1 = 0
-        pointer2 = 0
-        while pointer1 < len(literal_list1) and pointer2 < len(literal_list2):
-            if literal_list1[pointer1] == literal_list2[pointer2]:
-                pointer1 += 1
-            pointer2 += 1
-        if pointer1 == len(literal_list1):
-            return True
-        else:
-            return False
-    else:
-        return False
 def opt_function_reduce(func_TRUE, func_DC):
     possible_terms = set({})
     for term in func_TRUE:
@@ -144,51 +126,56 @@ def opt_function_reduce(func_TRUE, func_DC):
     answer = []
     terms_freq = {}
     for i in range(len(expansion)):
-        term1= break_literal(expansion[i])
-        value = False
-        for j in range(len(expansion)):
-            term2 = break_literal(expansion[j])
-            # if value is true means we found a terms more superior
-            value = value or subsequence_check(term2,term1)
-        if not value:
-            temp,cover_new = maximal_expansion(possible_terms,func_TRUE[i])
-            for element in cover_new:
-                if element in func_TRUE:
-                    if element in terms_freq:
-                        terms_freq[element] += 1
-                    else:
-                        terms_freq[element] = 1
+        temp,cover_new = maximal_expansion(possible_terms,func_TRUE[i])
+        for element in cover_new:
+            if element in func_TRUE:
+                if element in terms_freq:
+                    terms_freq[element] += 1
+                else:
+                    terms_freq[element] = 1
     for i in range(len(expansion)):
-        term1= break_literal(expansion[i])
-        value = False
-        for j in range(len(expansion)):
-            term2 = break_literal(expansion[j])
-            # if value is true means we found a terms more superior
-            value = value or subsequence_check(term2,term1)
-        if not value:
-            temp,cover_new = maximal_expansion(possible_terms,func_TRUE[i])
-            add = False
+        temp,cover_new = maximal_expansion(possible_terms,func_TRUE[i])
+        add = False
+        for element in cover_new:
+            if element in func_TRUE:
+                if terms_freq[element] == 1:
+                    add = True
+                    break
+        if add:
+            answer.append(expansion[i])
+            deleted_terms = []
             for element in cover_new:
                 if element in func_TRUE:
-                    if terms_freq[element] == 1:
-                        add = True
-                        break
-            if add:
-                answer.append(expansion[i])
-            else:
-                for element in cover_new:
-                    if element in func_TRUE:
-                        terms_freq[element] -= 1
+                    deleted_terms.append(element)
+            # print(f"Terms Deleted with boolean value 1 {deleted_terms}")
+            # print(f"Region covering this Term {expansion[i]}")
+        else:
+            for element in cover_new:
+                if element in func_TRUE:
+                    terms_freq[element] -= 1
     return list(set(answer))
 
-print("Sample Test 2")
-print(opt_function_reduce(["a'b'c'd", "a'b'cd", "a'bc'd", "abc'd'", "abc'd", "ab'c'd'", "ab'cd"],["a'bc'd'", "a'bcd", "ab'c'd"]))
-print("Sample Test 3")
-print(opt_function_reduce(["a'b'c", "a'bc", "a'bc'", "ab'c'"],["abc'"]))
-print("Sample Test 4")
-print(opt_function_reduce(["a'b'c'd'e'", "a'bc'd'e'", "abc'd'e'", "ab'c'd'e'", "abc'de'", "abcde'",
-"a'bcde'", "a'bcd'e'", "abcd'e'", "a'bc'de", "abc'de", "abcde",
-"a'bcde", "a'bcd'e", "abcd'e", "a'b'cd'e", "ab'cd'e"]
-,[]))
-print("Sample Test 1")
-print(opt_function_reduce(["a'bc'd'", "abc'd'", "a'b'c'd", "a'bc'd", "a'b'cd"],["abc'd"]))
+# print("Sample Test 2")
+# print(opt_function_reduce(["a'b'c'd", "a'b'cd", "a'bc'd", "abc'd'", "abc'd", "ab'c'd'", "ab'cd"],["a'bc'd'", "a'bcd", "ab'c'd"]))
+# print("Sample Test 3")
+# print(opt_function_reduce(["a'b'c", "a'bc", "a'bc'", "ab'c'"],["abc'"]))
+# print("Sample Test 4")
+# print(opt_function_reduce(["a'b'c'd'e'", "a'bc'd'e'", "abc'd'e'", "ab'c'd'e'", "abc'de'", "abcde'",
+# "a'bcde'", "a'bcd'e'", "abcd'e'", "a'bc'de", "abc'de", "abcde",
+# "a'bcde", "a'bcd'e", "abcd'e", "a'b'cd'e", "ab'cd'e"]
+# ,[]))
+# print("Sample Test 1")
+# print(opt_function_reduce(["a'bc'd'", "abc'd'", "a'b'c'd", "a'bc'd", "a'b'cd"],["abc'd"]))
+
+# func_TRUE = ["abcdefghijklmno", "abcdefghijklm'n'o'", "abcdefghijklmn'o", "abcdefghijklm'n'o", "abcdefghijklm'no'"]
+# func_DC = ["abcdefghijklm'no", "abcdefghijklmn'o'", "abcdefghijklmno'"]
+
+func_TRUE = ["a'b'c'd'", "a'bc'd", "abc'd'", "ab'c'd'", "a'bcd", "ab'cd"]
+func_DC = ["a'b'cd", "abcd"]
+
+# rupanshu shah test
+# func_TRUE = ["a'b'c'd'","a'b'cd"]
+# func_DC = ["a'bc'd'","abc'd'","ab'c'd'","a'bcd","abcd","ab'cd","a'b'cd'","a'b'c'd"]
+
+
+# print(opt_function_reduce(func_TRUE,func_DC))
