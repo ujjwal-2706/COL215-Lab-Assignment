@@ -171,16 +171,16 @@ def opt_function_reduce(func_TRUE, func_DC):
 # func_DC = ["abcdefghijklm'no", "abcdefghijklmn'o'", "abcdefghijklmno'"]
 
 #test case 1
-func_TRUE = ["a'b'c'd'", "a'bc'd", "abc'd'", "ab'c'd'", "a'bcd", "ab'cd"]
-func_DC = ["a'b'cd", "abcd"]
+# func_TRUE = ["a'b'c'd'", "a'bc'd", "abc'd'", "ab'c'd'", "a'bcd", "ab'cd"]
+# func_DC = ["a'b'cd", "abcd"]
 
 
-#test case 2
-func_TRUE = ["a'bc'd","a'bcd","abcd","abc'd","ab'cd","a'b'cd"]
-func_DC = ["a'b'c'd'","a'b'c'd","ab'c'd"]
+# #test case 2
+# func_TRUE = ["a'bc'd","a'bcd","abcd","abc'd","ab'cd","a'b'cd"]
+# func_DC = ["a'b'c'd'","a'b'c'd","ab'c'd"]
 
-#test case 3
-func_TRUE = ["a'b'c'd'e'", "a'b'cd'e", "a'bc'd'e'", "a'bc'de'", "a'bcd'e'", "a'bcd'e", "a'bcde'", "ab'c'd'e'", "abc'd'e'", "abc'de'"]
-func_DC = ["a'bcde", "ab'cd'e", "abc'de", "abcd'e'", "abcd'e", "abcde'", 'abcde']
+# # #test case 3
+# func_TRUE = ["a'b'c'd'e'", "a'b'cd'e", "a'bc'd'e'", "a'bc'de'", "a'bcd'e'", "a'bcd'e", "a'bcde'", "ab'c'd'e'", "abc'd'e'", "abc'de'"]
+# func_DC = ["a'bcde", "ab'cd'e", "abc'de", "abcd'e'", "abcd'e", "abcde'", 'abcde']
 
-print(opt_function_reduce(func_TRUE,func_DC))
+# print(opt_function_reduce(func_TRUE,func_DC))
